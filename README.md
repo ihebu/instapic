@@ -1,4 +1,4 @@
-# Instagram Image Downloader
+# Instagram Scraper
 
 ### Setup process
 
