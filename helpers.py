@@ -1,6 +1,7 @@
 from sys import stdout
 from os import mkdir
 import shutil
+import re
 
 
 def print_same_line(text):
@@ -59,4 +60,12 @@ def make_folder(user_name):
     except:
         print("Internal error: couldn't create /images folder.")
         quit()
+
+
+def query_hash(script):
+    pattern = re.compile(r'profilePosts.+\.pagination},queryId:"\w+"')
+    match = re.search(pattern, script)
+    result = match.group(0)
+    split = result.split('"')
+    return split[1]
 
