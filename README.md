@@ -1,5 +1,7 @@
 # Instagram Scraper
 
+Python application to scrape and download images of a given instagram account
+
 ### Setup process
 
 ##### Clone the repo
