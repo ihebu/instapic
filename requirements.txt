@@ -1,9 +1,9 @@
-beautifulsoup4 (4.8.0)
-certifi (2019.6.16)
-chardet (3.0.4)
-idna (2.8)
-requests (2.22.0)
-setuptools (39.0.1)
-soupsieve (1.9.3)
-tqdm (4.35.0)
-urllib3 (1.25.3)
+beautifulsoup4==4.8.0
+certifi==2019.6.16
+chardet==3.0.4
+idna==2.8
+requests==2.22.0
+setuptools==39.0.1
+soupsieve==1.9.3
+tqdm==4.35.0
+urllib3==1.25.3
