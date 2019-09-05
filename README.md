@@ -6,7 +6,7 @@
 
 ```
 $ git clone
-$ cd instagram-downloader
+$ cd instagram-scraper
 ```
 
 ##### Install the required modules ( you may need to use sudo prefix )
