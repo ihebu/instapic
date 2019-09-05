@@ -128,3 +128,6 @@ high-score.txt
 
 #vs code config folder
 .vscode/
+
+#images folder
+images/
