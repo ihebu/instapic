@@ -14,4 +14,14 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\nKeyboard interrupt : Instagram Scraper stopped.")
+
+    except NameError, ModuleNotFoundError:
+        print("\nError : Please check that all necessary dependencies are installed.")
+
+    except:
+        print("\nAn unknown error has occured: Instagram Scraper stopped.")
+
