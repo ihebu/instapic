@@ -20,7 +20,12 @@ if __name__ == "__main__":
 
     except NameError:
         print("Error : Please check that all necessary dependencies are installed.")
-        print("run '$ pip install -r requirements.txt'")
+
+    except (NameError, ModuleNotFoundError):
+        print("\nError : Please check that all necessary dependencies are installed.")
+
+    except:
+        print("\nAn unknown error has occured: Instagram Scraper stopped.")
 
     except Exception as e:
         print(f"Error : {e}")
