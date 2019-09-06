@@ -1,8 +1,15 @@
-from helpers import print_same_line, get_json_string
-import requests
-from bs4 import BeautifulSoup as bs
-import re
+try:
+    import requests
+    from bs4 import BeautifulSoup as bs
+except:
+    print("Error : Please check that all necessary dependencies are installed.")
+    print("run '$ pip install -r requirements.txt'")
+    quit()
+
 import json
+import re
+
+from helpers import get_json_string, print_same_line
 
 
 class Image:
@@ -45,7 +52,7 @@ class Image:
 
     def get_children(self):
         children_link = "https://www.instagram.com/p/" + self.shortcode
-        html = requests.get(children_link,timeout=10).text
+        html = requests.get(children_link, timeout=10).text
         soup = bs(html, "lxml")
         script = soup.find("script", text=re.compile("window._sharedData"))
         json_string = get_json_string(script)
@@ -58,4 +65,3 @@ class Image:
             child = Image.get_child(item, self.username)
             self.children.append(child)
             self.num_of_children += 1
-
