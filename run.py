@@ -24,8 +24,5 @@ if __name__ == "__main__":
     except (NameError, ModuleNotFoundError):
         print("\nError : Please check that all necessary dependencies are installed.")
 
-    except:
-        print("\nAn unknown error has occured: Instagram Scraper stopped.")
-
     except Exception as e:
         print(f"Error : {e}")
