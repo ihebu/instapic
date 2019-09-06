@@ -19,7 +19,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\nKeyboard interrupt : Instagram Scraper stopped.")
 
-    except NameError, ModuleNotFoundError:
+    except (NameError, ModuleNotFoundError):
         print("\nError : Please check that all necessary dependencies are installed.")
 
     except:
