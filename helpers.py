@@ -11,9 +11,6 @@ def print_same_line(text):
     stdout.flush()
 
 
-
-
-
 def get_json_string(script):
     text = script.text
     result = text.replace("window._sharedData = ", "")
