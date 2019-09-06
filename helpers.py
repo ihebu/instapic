@@ -11,8 +11,7 @@ def print_same_line(text):
     stdout.flush()
 
 
-def print_on_end(text):
-    print("\n" + text)
+
 
 
 def get_json_string(script):
