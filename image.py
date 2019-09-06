@@ -45,7 +45,7 @@ class Image:
 
     def get_children(self):
         children_link = "https://www.instagram.com/p/" + self.shortcode
-        html = requests.get(children_link).text
+        html = requests.get(children_link,timeout=10).text
         soup = bs(html, "lxml")
         script = soup.find("script", text=re.compile("window._sharedData"))
         json_string = get_json_string(script)
