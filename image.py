@@ -13,11 +13,12 @@ from helpers import get_json_string, print_same_line
 
 
 class Image:
-    def __init__(self, shortcode, display_url, __typename, username):
+    def __init__(self, shortcode, display_url, __typename, is_video, username):
         self.shortcode = shortcode
         self.display_url = display_url
         self.__typename = __typename
         self.username = username
+        self.is_video = is_video
         self.children = []
         self.num_of_children = 0
 
@@ -27,7 +28,7 @@ class Image:
         shortcode = image_object["shortcode"]
         display_url = image_object["display_url"]
         __typename = image_object["__typename"]
-        return cls(shortcode, display_url, __typename, username)
+        return cls(shortcode, display_url, __typename, False, username)
 
     @classmethod
     def from_json_data(cls, data, username):
@@ -35,7 +36,8 @@ class Image:
         shortcode = item["shortcode"]
         display_url = item["display_url"]
         __typename = item["__typename"]
-        return cls(shortcode, display_url, __typename, username)
+        is_video = item["is_video"]
+        return cls(shortcode, display_url, __typename, is_video, username)
 
     @property
     def has_children(self):

@@ -158,6 +158,8 @@ class InstagramScraper:
                 self.get_query_params()
                 for item in self.images:
                     image = Image.from_json_data(item, self.username)
+                    if image.is_video:
+                        continue
                     self.count += 1
                     self.downloads.append(image)
                     print_same_line(f"[{self.count} images]")
