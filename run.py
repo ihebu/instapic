@@ -25,4 +25,4 @@ if __name__ == "__main__":
         print("\nError : Please check that all necessary dependencies are installed.")
 
     except Exception as e:
-        print(f"Error : {e}")
+        print(f"An unexpected error has occured.")
