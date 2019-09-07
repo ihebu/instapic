@@ -43,7 +43,7 @@ class Image:
 
     @property
     def content(self):
-        return requests.get(self.display_url).content
+        return requests.get(self.display_url, timeout=10).content
 
     def download(self):
         destination = f"images/{self.username}/{self.shortcode}.jpg"
