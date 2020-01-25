@@ -6,7 +6,7 @@ try:
     from tqdm import tqdm
 except:
     print("Error : Please check that all necessary dependencies are installed.")
-    print("run '$ pip install -r requirements.txt'")
+    print("run 'pip install -r requirements.txt'")
     quit()
 
 import json
@@ -20,29 +20,8 @@ from image import Image
 
 
 class InstagramScraper:
-    @staticmethod
-    def get_username():
-        prompt = input("insert instagram username: ").strip()
-
-        if prompt == "":
-            print("Error : username cannot be empty. Please use a valid username")
-            quit()
-
-        if len(prompt) > 30:
-            print("Error : username is too long. Please use a valid username")
-            quit()
-
-        for char in prompt:
-            if not (char.isalnum() or char == "." or char == "_"):
-                print(
-                    "Error : username can only contain letters, numbers, periods, and underscores. Please use a valid username"
-                )
-                quit()
-
-        return prompt
-
-    def __init__(self):
-        self.username = self.get_username()
+    def __init__(self, username):
+        self.username = username
         self.query_hash = ""
         self.id = ""
         self.has_next_page = True
