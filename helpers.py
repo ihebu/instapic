@@ -26,7 +26,7 @@ def rmtree(path):
     try:
         shutil.rmtree(path)
     except:
-        print(f"Internal error :  could not delete folder {path}")
+        print(f"Error :  could not delete folder {path}")
         quit()
 
 
@@ -54,7 +54,7 @@ def make_folder(user_name):
             quit()
 
     except:
-        print("Internal error: couldn't create /images folder.")
+        print("Error: couldn't create /images folder.")
         quit()
 
 
