@@ -3,7 +3,6 @@ from scraper import InstagramScraper
 
 
 def get_username():
-
     prompt = input("insert instagram username: ")
     # remove spaces from user input
     prompt = prompt.strip()
@@ -31,7 +30,11 @@ def main():
     scraper.get_query_hash()
     scraper.scrape()
     make_folder(username)
-    scraper.download_images()
+    if scraper.approve_download:
+        scraper.download_images()
+    else:
+        print("Aborting download.")
+        quit()
 
 
 if __name__ == "__main__":
