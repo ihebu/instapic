@@ -63,7 +63,7 @@ class InstagramScraper:
             raise
 
     def get_query_hash(self):
-        print(f"scraping user '{self.username}'...")
+        print(f"checking user '{self.username}'...")
         # ppc = profile page container
         ppc_link = self.soup.find("link", href=re.compile("ProfilePageContainer.js"))
         script_url = "http://instagram.com" + ppc_link["href"]
@@ -165,10 +165,18 @@ class InstagramScraper:
                 raise
 
         if self.count > 0:
-            print(f"successully collected {self.count} images")
+            print(f"\nsuccessully collected {self.count} images")
         else:
             print("no images were found.")
             quit()
+
+    @property
+    def approve_download(self):
+        check = input("Download {} Images ? [Y/N] ".format(self.count))
+        if check.upper() == "Y" or check.upper() == "YES":
+            return True
+        # return False for any other type of output
+        return False
 
     def download_images(self):
         print("Starting download...")
