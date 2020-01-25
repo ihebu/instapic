@@ -1,5 +1,3 @@
-import sys
-
 from helpers import make_folder
 from scraper import InstagramScraper
 
