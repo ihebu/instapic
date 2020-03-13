@@ -1,13 +1,14 @@
-import urllib
-import requests
-from bs4 import BeautifulSoup as bs
-from tqdm import tqdm
+import argparse
 import json
 import re
 import time
-import argparse
+import urllib
 
-from helpers import get_json_string, make_folder, print_same_line, query_hash, rmtree
+import requests
+from bs4 import BeautifulSoup as bs
+from tqdm import tqdm
+
+import helpers
 from image import Image
 
 
@@ -40,7 +41,7 @@ class InstagramScraper:
             self.username = args.u
         else:
             self.username = username(input("insert username : "))
-        make_folder(self.username)
+        helpers.make_folder(self.username)
         self.query_hash = ""
         self.id = ""
         self.has_next_page = True
@@ -75,7 +76,7 @@ class InstagramScraper:
             quit()
 
         except requests.exceptions.ReadTimeout:
-            print_same_line("Timeout Error: Query stopped due to timeout")
+            helpers.print_same_line("Timeout Error: Query stopped due to timeout")
             quit()
 
         except:
@@ -97,19 +98,19 @@ class InstagramScraper:
             quit()
 
         except requests.exceptions.ReadTimeout:
-            print_same_line("Timeout Error: Query stopped due to timeout")
+            helpers.print_same_line("Timeout Error: Query stopped due to timeout")
             quit()
 
         except:
             raise
 
-        self.query_hash = query_hash(script)
+        self.query_hash = helpers.query_hash(script)
 
     @property
     def parsed_json(self):
         if self.first:
             script = self.soup.find("script", text=re.compile("window._sharedData"))
-            json_string = get_json_string(script)
+            json_string = helpers.get_json_string(script)
             return json.loads(json_string)
         else:
             http_response = requests.get(self.http_request, timeout=10).text
@@ -145,7 +146,7 @@ class InstagramScraper:
         self.has_next_page = page_info["has_next_page"]
         self.end_cursor = page_info["end_cursor"]
         if self.first:
-            print_same_line("collecting images...")
+            helpers.print_same_line("collecting images...")
             print()
         self.images = edge_owner["edges"]
 
@@ -159,16 +160,16 @@ class InstagramScraper:
                         continue
                     self.count += 1
                     self.downloads.append(image)
-                    print_same_line(f"[{self.count} images]")
+                    helpers.print_same_line(f"[{self.count} images]")
                     if image.has_children:
                         image.get_children()
                         self.count += image.num_of_children
                         self.downloads += image.children
-                        print_same_line(f"[{self.count} images]")
+                        helpers.print_same_line(f"[{self.count} images]")
                 self.first = False
 
             except KeyboardInterrupt:
-                print_same_line("Keyboard interrupt : Search stopped.\n")
+                helpers.print_same_line("Keyboard interrupt : Search stopped.\n")
                 break
 
             except requests.exceptions.ConnectionError:
@@ -206,7 +207,7 @@ class InstagramScraper:
                 self.downloaded += 1
 
             except KeyboardInterrupt:
-                print_same_line("Keyboard interrupt : download stopped.\n")
+                helpers.print_same_line("Keyboard interrupt : download stopped.\n")
                 break
 
             except requests.exceptions.ConnectionError:
@@ -214,7 +215,7 @@ class InstagramScraper:
                 quit()
 
             except requests.exceptions.ReadTimeout:
-                print_same_line("Timeout Error: Query stopped due to timeout")
+                helpers.print_same_line("Timeout Error: Query stopped due to timeout")
                 quit()
 
             except:
@@ -224,4 +225,4 @@ class InstagramScraper:
             print(f"successfully downloaded {self.downloaded} images")
         else:
             print("no images were downloaded.")
-            rmtree("images/" + self.username)
+            helpers.rmtree("images/" + self.username)
