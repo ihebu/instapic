@@ -20,5 +20,5 @@ $ pip install -r requirements.txt
 ##### Start the application
 
 ```
-$ python run.py
+$ python scraper.py
 ```

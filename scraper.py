@@ -226,3 +226,18 @@ class InstagramScraper:
         else:
             print("no images were downloaded.")
             helpers.rmtree("images/" + self.username)
+
+
+def main():
+    scraper = InstagramScraper()
+    scraper.get_query_hash()
+    scraper.scrape()
+    if scraper.approve_download:
+        scraper.download_images()
+    else:
+        print("Aborting download...")
+        quit()
+
+
+if __name__ == "__main__":
+    main()
