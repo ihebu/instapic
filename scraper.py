@@ -1,22 +1,14 @@
-try:
-    import urllib
-    import requests
-
-    from bs4 import BeautifulSoup as bs
-    from tqdm import tqdm
-except:
-    print("Error : Please check that all necessary dependencies are installed.")
-    print("run 'pip install -r requirements.txt'")
-    quit()
-
+import urllib
+import requests
+from bs4 import BeautifulSoup as bs
+from tqdm import tqdm
 import json
 import re
 import time
+import argparse
 
 from helpers import get_json_string, make_folder, print_same_line, query_hash, rmtree
 from image import Image
-
-import argparse
 
 
 def username(value):
