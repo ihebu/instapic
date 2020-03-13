@@ -16,12 +16,39 @@ import time
 from helpers import get_json_string, make_folder, print_same_line, query_hash, rmtree
 from image import Image
 
+import argparse
+
+
+def username(value):
+    value = value.strip()
+    if value == "":
+        raise argparse.ArgumentTypeError("username cannot be empty")
+
+    if len(value) > 30:
+        raise argparse.ArgumentTypeError("username cannot be more than 30 characters")
+    pattern = re.compile(r".*[^a-zA-Z0-9_].*").match(value)
+    if pattern:
+        raise argparse.ArgumentTypeError(
+            "username can only contain letters, numbers, periods, and underscores."
+        )
+
+    return value
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-u", help="specify the username", type=username)
+args = parser.parse_args()
+
 # TODO ADD DOCUMENTATION
 
 
 class InstagramScraper:
-    def __init__(self, username):
-        self.username = username
+    def __init__(self):
+        if args.u:
+            self.username = args.u
+        else:
+            self.username = username(input("insert username : "))
+        make_folder(self.username)
         self.query_hash = ""
         self.id = ""
         self.has_next_page = True
@@ -63,11 +90,10 @@ class InstagramScraper:
             raise
 
     def get_query_hash(self):
-        print(f"checking user '{self.username}'...")
+        print("checking user {}...".format(self.username))
         # ppc = profile page container
         ppc_link = self.soup.find("link", href=re.compile("ProfilePageContainer.js"))
         script_url = "http://instagram.com" + ppc_link["href"]
-
         try:
             script = requests.get(script_url, timeout=10).text
 
