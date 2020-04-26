@@ -15,10 +15,7 @@ from image import Image
 # TODO ADD DOCUMENTATION
 class InstagramScraper:
     def __init__(self, args):
-        if args.u:
-            self.username = args.u
-        else:
-            self.username = input("insert username : ")
+        self.username = args.username or input("insert username : ")
         helpers.make_folder(self.username)
         self.query_hash = ""
         self.id = ""
@@ -27,7 +24,6 @@ class InstagramScraper:
         self.first = True
         self.count = 0
         self.downloaded = 0
-
         self.images = []
         self.downloads = []
 
@@ -208,7 +204,7 @@ class InstagramScraper:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-u", help="specify the username")
+    parser.add_argument("-u", "--username", help="specify the username", metavar="")
     args = parser.parse_args()
     scraper = InstagramScraper(args)
     scraper.get_query_hash()
