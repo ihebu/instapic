@@ -11,7 +11,7 @@ $ git clone https://github.com/Iheb-Haboubi/instapic.git
 $ cd instapic
 ```
 
-##### Install the required modules ( you may need to use sudo prefix )
+##### Install the required modules
 
 ```
 $ pip install -r requirements.txt
