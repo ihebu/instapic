@@ -3,6 +3,7 @@ import json
 import re
 import time
 import urllib
+import sys
 
 import requests
 from bs4 import BeautifulSoup as bs
@@ -32,12 +33,9 @@ class InstagramScraper:
         try:
             http_response = requests.get(self.http_request, timeout=10)
             status_code = http_response.status_code
-
             if status_code == 404:
-                print(
-                    f"Error : could not find user {self.username}. Please verify that the user exists."
-                )
-                quit()
+                print(f"Error : could not find user {self.username}.")
+                sys.exit(1)
 
             html = http_response.text
             return bs(html, "lxml")
