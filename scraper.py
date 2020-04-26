@@ -12,35 +12,13 @@ import helpers
 from image import Image
 
 
-def username(value):
-    value = value.strip()
-    if value == "":
-        raise argparse.ArgumentTypeError("username cannot be empty")
-
-    if len(value) > 30:
-        raise argparse.ArgumentTypeError("username cannot be more than 30 characters")
-    pattern = re.compile(r".*[^a-zA-Z0-9_].*").match(value)
-    if pattern:
-        raise argparse.ArgumentTypeError(
-            "username can only contain letters, numbers, periods, and underscores."
-        )
-
-    return value
-
-
-parser = argparse.ArgumentParser()
-parser.add_argument("-u", help="specify the username", type=username)
-args = parser.parse_args()
-
 # TODO ADD DOCUMENTATION
-
-
 class InstagramScraper:
-    def __init__(self):
+    def __init__(self, args):
         if args.u:
             self.username = args.u
         else:
-            self.username = username(input("insert username : "))
+            self.username = input("insert username : ")
         helpers.make_folder(self.username)
         self.query_hash = ""
         self.id = ""
@@ -229,7 +207,10 @@ class InstagramScraper:
 
 
 def main():
-    scraper = InstagramScraper()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-u", help="specify the username")
+    args = parser.parse_args()
+    scraper = InstagramScraper(args)
     scraper.get_query_hash()
     scraper.scrape()
     if scraper.approve_download:
