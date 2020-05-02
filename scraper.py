@@ -17,7 +17,7 @@ from image import Image
 class InstagramScraper:
     def __init__(self, args):
         self.username = args.username or input("insert username : ")
-        self.has_next_page = True
+        self.next = True
         self.first = True
         self.downloaded = 0
         self.images = []
@@ -77,7 +77,7 @@ class InstagramScraper:
 
         page_info = edge_owner["page_info"]
         # get the needed data
-        self.has_next_page = page_info["has_next_page"]
+        self.next = page_info["has_next_page"]
         self.end_cursor = page_info["end_cursor"]
         if self.first:
             helpers.print_same_line("starting download...")
@@ -90,21 +90,29 @@ class InstagramScraper:
         display = "downloaded {} images".format(self.downloaded)
         helpers.print_same_line(display)
 
-    def scrape(self):
-        helpers.make_folder(self.username)
-        while self.has_next_page:
+    def download_children(self, image):
+        for child in image.children:
+            self.download(child)
+
+    def download_images(self):
+        for item in self.images:
+            image = Image.from_json_data(item, self.username)
+            if image.is_video:
+                continue
+            self.download(image)
+            if image.has_children:
+                image.get_children()
+                self.download_children(image)
+
+    def loop(self):
+        while self.next:
             self.get_query_params()
-            for item in self.images:
-                image = Image.from_json_data(item, self.username)
-                if image.is_video:
-                    continue
-                self.download(image)
-                if image.has_children:
-                    image.get_children()
-                    for child in image.children:
-                        self.download(child)
+            self.download_images()
             self.first = False
 
+    def scrape(self):
+        helpers.make_folder(self.username)
+        self.loop()
         if self.downloaded > 0:
             print(f"\nsuccessully downloaded {self.downloaded} images")
         else:
