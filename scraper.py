@@ -17,9 +17,6 @@ from image import Image
 class InstagramScraper:
     def __init__(self, args):
         self.username = args.username or input("insert username : ")
-        self.query_hash = ""
-        self.id = ""
-        self.end_cursor = ""
         self.has_next_page = True
         self.first = True
         self.downloaded = 0
