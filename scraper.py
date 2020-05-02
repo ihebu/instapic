@@ -30,52 +30,20 @@ class InstagramScraper:
 
     @property
     def soup(self):
-        try:
-            http_response = requests.get(self.http_request, timeout=10)
-            status_code = http_response.status_code
-            if status_code == 404:
-                print(f"Error : could not find user {self.username}.")
-                sys.exit(1)
-
-            html = http_response.text
-            return bs(html, "lxml")
-
-        except KeyboardInterrupt:
-            raise
-
-        except requests.exceptions.ConnectionError:
-            print("Connection Error : Please verify your internet connection")
-            quit()
-
-        except requests.exceptions.ReadTimeout:
-            helpers.print_same_line("Timeout Error: Query stopped due to timeout")
-            quit()
-
-        except:
-            raise
+        http_response = requests.get(self.http_request, timeout=10)
+        status_code = http_response.status_code
+        if status_code == 404:
+            print(f"Error : could not find user {self.username}.")
+            sys.exit(1)
+        html = http_response.text
+        return bs(html, "lxml")
 
     def get_query_hash(self):
         print("checking user {}...".format(self.username))
         # ppc = profile page container
         ppc_link = self.soup.find("link", href=re.compile("ProfilePageContainer.js"))
         script_url = "http://instagram.com" + ppc_link["href"]
-        try:
-            script = requests.get(script_url, timeout=10).text
-
-        except KeyboardInterrupt:
-            raise
-
-        except requests.exceptions.ConnectionError:
-            print("Connection Error : Please verify your internet connection")
-            quit()
-
-        except requests.exceptions.ReadTimeout:
-            helpers.print_same_line("Timeout Error: Query stopped due to timeout")
-            quit()
-
-        except:
-            raise
-
+        script = requests.get(script_url, timeout=10).text
         self.query_hash = helpers.query_hash(script)
 
     @property
@@ -124,36 +92,20 @@ class InstagramScraper:
 
     def scrape(self):
         while self.has_next_page:
-            try:
-                self.get_query_params()
-                for item in self.images:
-                    image = Image.from_json_data(item, self.username)
-                    if image.is_video:
-                        continue
-                    self.count += 1
-                    self.downloads.append(image)
+            self.get_query_params()
+            for item in self.images:
+                image = Image.from_json_data(item, self.username)
+                if image.is_video:
+                    continue
+                self.count += 1
+                self.downloads.append(image)
+                helpers.print_same_line(f"[{self.count} images]")
+                if image.has_children:
+                    image.get_children()
+                    self.count += image.num_of_children
+                    self.downloads += image.children
                     helpers.print_same_line(f"[{self.count} images]")
-                    if image.has_children:
-                        image.get_children()
-                        self.count += image.num_of_children
-                        self.downloads += image.children
-                        helpers.print_same_line(f"[{self.count} images]")
-                self.first = False
-
-            except KeyboardInterrupt:
-                helpers.print_same_line("Keyboard interrupt : Search stopped.\n")
-                break
-
-            except requests.exceptions.ConnectionError:
-                print("\nConnection Error : Please verify your internet connection")
-                quit()
-
-            except requests.exceptions.ReadTimeout:
-                print("\nTimeout Error: Query stopped due to timeout")
-                quit()
-
-            except:
-                raise
+            self.first = False
 
         if self.count > 0:
             print(f"\nsuccessully collected {self.count} images")
@@ -174,25 +126,8 @@ class InstagramScraper:
         downloader = tqdm(self.downloads, leave=False)
         for image in downloader:
             downloader.set_description(f"downloading {image.shortcode}.jpg")
-            try:
-                image.download()
-                self.downloaded += 1
-
-            except KeyboardInterrupt:
-                helpers.print_same_line("Keyboard interrupt : download stopped.\n")
-                break
-
-            except requests.exceptions.ConnectionError:
-                print("Connection Error : Please verify your internet connection")
-                quit()
-
-            except requests.exceptions.ReadTimeout:
-                helpers.print_same_line("Timeout Error: Query stopped due to timeout")
-                quit()
-
-            except:
-                raise
-
+            image.download()
+            self.downloaded += 1
         if self.downloaded > 0:
             print(f"successfully downloaded {self.downloaded} images")
         else:
