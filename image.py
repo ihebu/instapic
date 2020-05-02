@@ -1,11 +1,5 @@
-try:
-    import requests
-    from bs4 import BeautifulSoup as bs
-except:
-    print("Error : Please check that all necessary dependencies are installed.")
-    print("run '$ pip install -r requirements.txt'")
-    quit()
-
+import requests
+from bs4 import BeautifulSoup as bs
 import json
 import re
 
