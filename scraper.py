@@ -17,16 +17,13 @@ from image import Image
 class InstagramScraper:
     def __init__(self, args):
         self.username = args.username or input("insert username : ")
-        helpers.make_folder(self.username)
         self.query_hash = ""
         self.id = ""
-        self.has_next_page = True
         self.end_cursor = ""
+        self.has_next_page = True
         self.first = True
-        self.count = 0
         self.downloaded = 0
         self.images = []
-        self.downloads = []
 
     @property
     def soup(self):
@@ -86,53 +83,35 @@ class InstagramScraper:
         self.has_next_page = page_info["has_next_page"]
         self.end_cursor = page_info["end_cursor"]
         if self.first:
-            helpers.print_same_line("collecting images...")
+            helpers.print_same_line("starting download...")
             print()
         self.images = edge_owner["edges"]
 
+    def download(self, image):
+        image.download()
+        self.downloaded += 1
+        display = "downloaded {} images".format(self.downloaded)
+        helpers.print_same_line(display)
+
     def scrape(self):
+        helpers.make_folder(self.username)
         while self.has_next_page:
             self.get_query_params()
             for item in self.images:
                 image = Image.from_json_data(item, self.username)
                 if image.is_video:
                     continue
-                self.count += 1
-                self.downloads.append(image)
-                helpers.print_same_line(f"[{self.count} images]")
+                self.download(image)
                 if image.has_children:
                     image.get_children()
-                    self.count += image.num_of_children
-                    self.downloads += image.children
-                    helpers.print_same_line(f"[{self.count} images]")
+                    for child in image.children:
+                        self.download(child)
             self.first = False
 
-        if self.count > 0:
-            print(f"\nsuccessully collected {self.count} images")
+        if self.downloaded > 0:
+            print(f"\nsuccessully downloaded {self.downloaded} images")
         else:
             print("no images were found.")
-            quit()
-
-    @property
-    def approve_download(self):
-        check = input("Download {} Images ? [Y/N] ".format(self.count))
-        if check.upper() == "Y" or check.upper() == "YES":
-            return True
-        # return False for any other type of output
-        return False
-
-    def download_images(self):
-        print("Starting download...")
-        downloader = tqdm(self.downloads, leave=False)
-        for image in downloader:
-            downloader.set_description(f"downloading {image.shortcode}.jpg")
-            image.download()
-            self.downloaded += 1
-        if self.downloaded > 0:
-            print(f"successfully downloaded {self.downloaded} images")
-        else:
-            print("no images were downloaded.")
-            helpers.rmtree("images/" + self.username)
 
 
 def main():
@@ -142,11 +121,6 @@ def main():
     scraper = InstagramScraper(args)
     scraper.get_query_hash()
     scraper.scrape()
-    if scraper.approve_download:
-        scraper.download_images()
-    else:
-        print("Aborting download...")
-        quit()
 
 
 if __name__ == "__main__":
