@@ -43,8 +43,9 @@ class InstagramScraper:
     @property
     def parsed_json(self):
         if self.first:
-            script = self.soup.find("script", text=re.compile("window._sharedData"))
-            json_string = helpers.get_json_string(script)
+            pattern = "window._sharedData = "
+            script = self.soup.find("script", text=re.compile(pattern))
+            json_string = script.text.replace(pattern, "").replace(";", "")
             return json.loads(json_string)
         else:
             http_response = requests.get(self.http_request, timeout=10).text

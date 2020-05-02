@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup as bs
 import json
 import re
 
-from helpers import get_json_string, print_same_line
+from helpers import print_same_line
 
 
 class Image:
@@ -50,8 +50,9 @@ class Image:
         children_link = "https://www.instagram.com/p/" + self.shortcode
         html = requests.get(children_link, timeout=10).text
         soup = bs(html, "lxml")
-        script = soup.find("script", text=re.compile("window._sharedData"))
-        json_string = get_json_string(script)
+        pattern = "window._sharedData = "
+        script = soup.find("script", text=re.compile(pattern))
+        json_string = script.text.replace(pattern, "").replace(";", "")
         parsed_json = json.loads(json_string)
         profile_page_data = parsed_json["entry_data"]["PostPage"][0]
         shortcode_media = profile_page_data["graphql"]["shortcode_media"]

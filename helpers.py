@@ -11,12 +11,6 @@ def print_same_line(text):
     stdout.flush()
 
 
-def get_json_string(script):
-    text = script.text
-    result = text.replace("window._sharedData = ", "")
-    return result[:-1]
-
-
 def make_http_request(query_hash, profile_id, end_cursor):
     sample = f'https://www.instagram.com/graphql/query/?query_hash={query_hash}&variables={{"id":"{profile_id}","first":12,"after":"{end_cursor}"}}'
     return sample
@@ -64,4 +58,3 @@ def query_hash(script):
     result = match.group(0)
     split = result.split('"')
     return split[1]
-
