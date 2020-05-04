@@ -13,7 +13,6 @@ import helpers
 from image import Image
 
 
-# TODO ADD DOCUMENTATION
 class InstagramScraper:
     def __init__(self, args):
         self.username = args.username or input("insert username : ")
@@ -65,9 +64,11 @@ class InstagramScraper:
             print("getting user info...")
             user = self.parsed_json["entry_data"]["ProfilePage"][0]["graphql"]["user"]
             self.id = user["id"]
+            if user["is_private"]:
+                print("User account is private. Abort")
+                quit()
         else:
             user = self.parsed_json["data"]["user"]
-
         edge_owner = user["edge_owner_to_timeline_media"]
         posts_count = edge_owner["count"]
 
@@ -79,10 +80,10 @@ class InstagramScraper:
         # get the needed data
         self.has_next_page = page_info["has_next_page"]
         self.end_cursor = page_info["end_cursor"]
+        self.images = edge_owner["edges"]
         if self.first:
             helpers.print_same_line("starting download...")
             print()
-        self.images = edge_owner["edges"]
 
     def download(self, image):
         image.download()
