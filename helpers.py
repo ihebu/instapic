@@ -1,6 +1,5 @@
 from sys import stdout
-from os import mkdir
-import shutil
+import os
 import re
 
 
@@ -11,37 +10,12 @@ def print_same_line(text):
     stdout.flush()
 
 
-def rmtree(path):
-    try:
-        shutil.rmtree(path)
-    except:
-        print(f"Error :  could not delete folder {path}")
-        quit()
-
-
-def make_folder(user_name):
-    try:
-        mkdir("images")
-        try:
-            mkdir("images/" + user_name)
-        except FileExistsError:
-            print(f"folder /images/{user_name} already exists.")
-            rmtree("images/" + user_name)
-            mkdir("images/" + user_name)
-        except:
-            print("Internal error: couldn't create the images folder.")
-            quit()
-
-    except FileExistsError:
-        try:
-            mkdir("images/" + user_name)
-        except FileExistsError:
-            rmtree("images/" + user_name)
-            mkdir("images/" + user_name)
-        except:
-            print(f"Internal error: couldn't create /images/{user_name} folder.")
-            quit()
-
-    except:
-        print("Error: couldn't create /images folder.")
-        quit()
+def make_folder(name):
+    if os.path.isdir("images"):
+        path = os.path.join("images", name)
+        if not os.path.isdir(path):
+            os.mkdir(path)
+    else:
+        os.mkdir("images")
+        path = os.path.join("images", name)
+        os.mkdir(path)
