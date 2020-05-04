@@ -20,6 +20,7 @@ class InstagramScraper:
         self.first = True
         self.downloaded = 0
         self.images = []
+        self.query_hash = "9dcf6e1a98bc7f6e92953d5a61027b98"
 
     @property
     def soup(self):
@@ -29,12 +30,6 @@ class InstagramScraper:
             sys.exit(1)
         html = response.text
         return bs(html, "lxml")
-
-    def get_query_hash(self):
-        print("checking user {}...".format(self.username))
-        url = "http://instagram.com/static/bundles/metro/ProfilePageContainer.js/0e6032c4b4ec.js"
-        script = requests.get(url, timeout=10).text
-        self.query_hash = helpers.query_hash(script)
 
     @property
     def parsed_json(self):
@@ -114,7 +109,6 @@ def main():
     parser.add_argument("-u", "--username", help="specify the username", metavar="")
     args = parser.parse_args()
     scraper = InstagramScraper(args)
-    scraper.get_query_hash()
     scraper.scrape()
 
 
