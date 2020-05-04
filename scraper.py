@@ -23,20 +23,17 @@ class InstagramScraper:
 
     @property
     def soup(self):
-        http_response = requests.get(self.http_request, timeout=10)
-        status_code = http_response.status_code
-        if status_code == 404:
+        response = requests.get(self.url, timeout=10)
+        if response.status_code == 404:
             print(f"Error : could not find user {self.username}.")
             sys.exit(1)
-        html = http_response.text
+        html = response.text
         return bs(html, "lxml")
 
     def get_query_hash(self):
         print("checking user {}...".format(self.username))
-        # ppc = profile page container
-        ppc_link = self.soup.find("link", href=re.compile("ProfilePageContainer.js"))
-        script_url = "http://instagram.com" + ppc_link["href"]
-        script = requests.get(script_url, timeout=10).text
+        url = "http://instagram.com/static/bundles/metro/ProfilePageContainer.js/0e6032c4b4ec.js"
+        script = requests.get(url, timeout=10).text
         self.query_hash = helpers.query_hash(script)
 
     @property
@@ -46,13 +43,13 @@ class InstagramScraper:
             json_string = helpers.get_json_string(script)
             return json.loads(json_string)
         else:
-            http_response = requests.get(self.http_request, timeout=10).text
+            http_response = requests.get(self.url, timeout=10).text
             return json.loads(http_response)
 
     @property
-    def http_request(self):
+    def url(self):
         if self.first:
-            return f"https://www.instagram.com/{self.username}/?hl=en"
+            return f"https://www.instagram.com/{self.username}"
         else:
             variables = f'{{"id":"{self.id}","first":12,"after":"{self.end_cursor}"}}'
             # encode the variables with the UTF-8 encoding scheme
@@ -62,14 +59,14 @@ class InstagramScraper:
     def get_query_params(self):
         if self.first:
             print("getting user info...")
-            user = self.parsed_json["entry_data"]["ProfilePage"][0]["graphql"]["user"]
-            self.id = user["id"]
-            if user["is_private"]:
+            data = self.parsed_json["entry_data"]["ProfilePage"][0]["graphql"]["user"]
+            self.id = data["id"]
+            if data["is_private"]:
                 print("User account is private. Abort")
                 quit()
         else:
-            user = self.parsed_json["data"]["user"]
-        edge_owner = user["edge_owner_to_timeline_media"]
+            data = self.parsed_json["data"]["user"]
+        edge_owner = data["edge_owner_to_timeline_media"]
         posts_count = edge_owner["count"]
 
         if posts_count == 0:
