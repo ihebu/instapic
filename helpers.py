@@ -11,11 +11,6 @@ def print_same_line(text):
     stdout.flush()
 
 
-def make_http_request(query_hash, profile_id, end_cursor):
-    sample = f'https://www.instagram.com/graphql/query/?query_hash={query_hash}&variables={{"id":"{profile_id}","first":12,"after":"{end_cursor}"}}'
-    return sample
-
-
 def rmtree(path):
     try:
         shutil.rmtree(path)
