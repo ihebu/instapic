@@ -1,13 +1,13 @@
 import argparse
 import json
 import re
+import sys
 import time
 import urllib
-import sys
 
 import requests
 from bs4 import BeautifulSoup as bs
-from tqdm import tqdm
+
 
 import helpers
 from image import Image
@@ -44,14 +44,25 @@ class InstagramScraper:
             return json.loads(http_response)
 
     @property
+    def variables(self):
+        return {"id": self.id, "first": 12, "after": self.end_cursor}
+
+    @property
+    def query_params(self):
+        params = {
+            "query_hash": self.query_hash,
+            "variables": json.dumps(self.variables),
+        }
+        return urllib.parse.urlencode(params)
+
+    @property
     def url(self):
         if self.first:
-            return f"https://www.instagram.com/{self.username}"
+            return "https://www.instagram.com/" + self.username
         else:
-            variables = f'{{"id":"{self.id}","first":12,"after":"{self.end_cursor}"}}'
-            # encode the variables with the UTF-8 encoding scheme
-            encoded = urllib.parse.quote(variables)
-            return f"https://www.instagram.com/graphql/query/?query_hash={self.query_hash}&variables={encoded}"
+            path = "https://www.instagram.com/graphql/query/?"
+            url = path + self.query_params
+            return url
 
     def get_query_params(self):
         if self.first:
