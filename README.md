@@ -1,23 +1,23 @@
-# Instagram Scraper
+# Instapic
 
-Python application to scrape and download images of a given instagram account
+Python application download info and images of instagram accounts
 
-### Setup process
+### Installation
 
-##### Clone the repo
+Clone the repo
 
 ```
 $ git clone https://github.com/Iheb-Haboubi/instapic.git
-$ cd instapic
+$ cd instapic/src
 ```
 
-##### Install the required modules
+Install the required modules
 
 ```
 $ pip install -r requirements.txt
 ```
 
-##### Start the application
+### Usage
 
 ```
 $ python scraper.py
