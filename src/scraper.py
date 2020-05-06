@@ -71,6 +71,9 @@ class InstagramScraper:
             if self.first and self.extract:
                 self.user.export_json()
             if self.download:
+                if self.user.is_private:
+                    print("user is private : Cannot scrape.")
+                    quit()
                 self.user.download()
             else:
                 break
