@@ -1,0 +1,17 @@
+class User:
+    def __init__(self, data):
+        self.username = data["username"]
+        self.full = data["full_name"]
+        self.bio = data["biography"]
+        self.id = data["id"]
+        self.followers = data["edge_followed_by"]["count"]
+        self.followees = data["edge_follow"]["count"]
+        self.posts_count = data["edge_owner_to_timeline_media"]["count"]
+        self.is_private = data["is_private"]
+        self.is_verified = data["is_verified"]
+        self.is_business = data["is_business_account"]
+        self.business_category = data["business_category_name"]
+        self.has_channel = data["has_channel"]
+        self.is_joined_recently = data["is_joined_recently"]
+        self.profile_pic = data["profile_pic_url"]
+        self.profile_pic_hd = data["profile_pic_url_hd"]

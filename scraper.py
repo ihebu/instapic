@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup as bs
 
 import helpers
 from image import Image
+from user import User
 
 
 class InstagramScraper:
@@ -28,7 +29,7 @@ class InstagramScraper:
 
     @property
     def variables(self):
-        return {"id": self.id, "first": 12, "after": self.end_cursor}
+        return {"id": self.user.id, "first": 12, "after": self.end_cursor}
 
     @property
     def query_params(self):
@@ -46,25 +47,21 @@ class InstagramScraper:
 
     def get_query_params(self):
         if self.first:
-            print("getting user info...")
             data = self.json["entry_data"]["ProfilePage"][0]["graphql"]["user"]
-            self.id = data["id"]
-            if data["is_private"]:
+            self.user = User(data)
+            if self.user.is_private:
                 print("User account is private. Abort")
                 sys.exit()
         else:
             data = self.json["data"]["user"]
         edge_owner = data["edge_owner_to_timeline_media"]
-        posts_count = edge_owner["count"]
-        if posts_count == 0:
-            print(f"user {self.username} has 0 posts")
-            sys.exit()
-
         page_info = edge_owner["page_info"]
-        # get the needed data
         self.next = page_info["has_next_page"]
         self.end_cursor = page_info["end_cursor"]
         self.images = edge_owner["edges"]
+        if self.user.posts_count == 0:
+            print(f"user {self.username} has 0 posts")
+            sys.exit()
         if self.first:
             helpers.print_same_line("starting download...")
             print()
@@ -87,6 +84,7 @@ class InstagramScraper:
 
     def scrape(self):
         helpers.make_folder(self.username)
+        print("getting user info...")
         while self.next:
             self.get_query_params()
             self.download_images()
